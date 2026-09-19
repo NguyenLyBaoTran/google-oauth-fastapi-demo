@@ -28,7 +28,7 @@ TestOauth/
 ### 1. Clone the project
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone YOUR_GITHUB_REPOSITORY_URL TestOauth
 cd TestOauth
 ```
 
@@ -46,10 +46,16 @@ Windows:
 .venv\Scripts\activate
 ```
 
-macOS:
+macOS/linux:
 
 ```bash
 source .venv/bin/activate
+```
+
+Linux(fish):
+
+```bash
+source .venv/bin/activate.fish
 ```
 
 ### 4. Install dependencies
