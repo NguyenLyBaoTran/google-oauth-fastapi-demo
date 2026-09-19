@@ -1,82 +1,164 @@
-# Google OAuth 2.0 Login Demo with FastAPI
+# Google OAuth FastAPI Demo
 
-A simple Google OAuth 2.0 login demo built with **FastAPI** and **Authlib**.
+A simple FastAPI application demonstrating Google OAuth 2.0 authentication using Authlib and SessionMiddleware.
 
-## Technologies
+---
 
-* Python
-* FastAPI
-* Uvicorn
-* Authlib
-* Google OAuth 2.0
-* SessionMiddleware
-* ngrok
+## Requirements
 
-## Project Structure
+Before starting, make sure you have:
 
-```text
-TestOauth/
-├── .env.example
-├── .gitignore
-├── main.py
-├── requirements.txt
-└── README.md
-```
+* Python 3.10 or later
+* Git
+* A Google account
+* A Google Cloud project
+* ngrok account (only required if you want to use a public HTTPS URL)
+
+---
 
 ## Setup
 
 ### 1. Clone the project
 
+Clone the repository:
+
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL TestOauth
+git clone https://github.com/NguyenLyBaoTran/google-oauth-fastapi-demo TestOauth
 cd TestOauth
 ```
 
+If you already have the project downloaded, simply open a terminal in the project directory.
+
+---
+
 ### 2. Create a virtual environment
+
+Create a Python virtual environment:
 
 ```bash
 python -m venv .venv
 ```
 
+If `python` is not available, try:
+
+```bash
+python3 -m venv .venv
+```
+
+---
+
 ### 3. Activate the virtual environment
 
-Windows:
+#### Windows
+
+PowerShell:
 
 ```powershell
 .venv\Scripts\activate
 ```
 
-macOS/linux:
+Command Prompt:
+
+```cmd
+.venv\Scripts\activate.bat
+```
+
+#### Linux / macOS
 
 ```bash
 source .venv/bin/activate
 ```
 
-Linux(fish):
+#### Linux with fish shell
 
-```bash
+```fish
 source .venv/bin/activate.fish
 ```
 
+After activation, you should see `(.venv)` at the beginning of your terminal prompt.
+
+---
+
 ### 4. Install dependencies
+
+Install the required Python packages:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Configure environment variables
+---
 
-Create a `.env` file based on `.env.example`.
+## Google OAuth Configuration
 
-#### Windows (PowerShell)
+This application uses Google OAuth 2.0 for user authentication.
 
-Copy `.env.example` to `.env`:
+You need to create a Google OAuth client and configure the redirect URI before running the application.
+
+### 1. Open Google Cloud Console
+
+Open:
+
+[Google Cloud Console](https://console.cloud.google.com/?utm_source=chatgpt.com)
+
+Select an existing project or create a new Google Cloud project.
+
+### 2. Create OAuth credentials
+
+Depending on the Google Cloud Console interface, you can access OAuth configuration through either:
+
+**Google Auth Platform → Clients**
+
+or:
+
+**APIs & Services → Credentials**
+
+Create a new **OAuth client ID**.
+
+For the application type, select:
+
+```text
+Web application
+```
+
+### 3. Configure the redirect URI
+
+For local development, add the following under **Authorized redirect URIs**:
+
+```text
+http://localhost:8081/auth/google/callback
+```
+
+The redirect URI must exactly match the value used by the application.
+
+### 4. Get the Client ID and Client Secret
+
+After creating the OAuth client, Google provides:
+
+```text
+Client ID
+Client Secret
+```
+
+Keep the Client Secret private.
+
+You will use these values in the `.env` file.
+
+---
+
+## Environment Variables
+
+### 1. Create the `.env` file
+
+Create `.env` from `.env.example`.
+
+#### Windows PowerShell
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Open the `.env` file:
+Open the file:
 
 ```powershell
 notepad .env
@@ -84,15 +166,8 @@ notepad .env
 
 #### Linux / macOS
 
-Copy `.env.example` to `.env`:
-
 ```bash
 cp .env.example .env
-```
-
-Open the `.env` file:
-
-```bash
 nano .env
 ```
 
@@ -102,7 +177,7 @@ You can also use VS Code:
 code .env
 ```
 
-### Configure `.env`
+### 2. Configure `.env`
 
 Set the following values:
 
@@ -115,13 +190,15 @@ SESSION_SECRET=your_session_secret
 
 Replace:
 
-* `your_google_client_id` with your Google OAuth Client ID.
-* `your_google_client_secret` with your Google OAuth Client Secret.
-* `your_session_secret` with a random secret string.
+* `your_google_client_id` with your Google OAuth Client ID
+* `your_google_client_secret` with your Google OAuth Client Secret
+* `your_session_secret` with a random secret string
 
-Generate a random session secret:
+### 3. Generate a session secret
 
-Windows (PowerShell):
+You can generate a secure random session secret using Python.
+
+Windows:
 
 ```powershell
 python -c "import secrets; print(secrets.token_urlsafe(32))"
@@ -133,15 +210,15 @@ Linux / macOS:
 python3 -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-Copy the generated value and set it as:
+Copy the generated value into:
 
 ```env
 SESSION_SECRET=your_generated_secret
 ```
 
-### Verify the `.env` file
+### 4. Check the `.env` file
 
-Windows (PowerShell):
+Windows PowerShell:
 
 ```powershell
 Get-Content .env
@@ -153,208 +230,362 @@ Linux / macOS:
 cat .env
 ```
 
-> Do not upload the `.env` file to GitHub. It contains sensitive OAuth credentials.
+> Never commit `.env` to GitHub.
 
-## Google OAuth Configuration
-
-Create a Google OAuth Client in Google Cloud Console.
-
-For local testing, add this Authorized Redirect URI:
+Make sure `.gitignore` contains:
 
 ```text
-http://localhost:8081/auth/google/callback
+.env
+.venv/
+__pycache__/
 ```
 
-The Redirect URI in Google Cloud must exactly match the `GOOGLE_REDIRECT_URI` in `.env`.
+---
 
 ## Run the Application
 
-Start the FastAPI server:
+Start the FastAPI development server.
 
-```bash
+### Windows
+
+```powershell
+.venv\Scripts\activate
 uvicorn main:app --reload --port 8081
 ```
 
-The application will run at:
+### Linux / macOS
+
+```bash
+source .venv/bin/activate
+uvicorn main:app --reload --port 8081
+```
+
+### Linux with fish shell
+
+```fish
+source .venv/bin/activate.fish
+uvicorn main:app --reload --port 8081
+```
+
+The application should now be available at:
 
 ```text
 http://localhost:8081
 ```
 
-## Using ngrok
+You can test the root endpoint by opening:
 
-ngrok can create a public HTTPS URL that forwards requests to the local FastAPI server.
-
-This is useful when demonstrating OAuth with a public HTTPS URL or when the application needs to be accessed from outside the local computer.
-
-### 1. Authenticate ngrok
-
-If ngrok has not been authenticated yet:
-
-```bash
-ngrok config add-authtoken YOUR_NGROK_AUTHTOKEN
+```text
+http://localhost:8081/
 ```
 
-> Keep your ngrok authtoken private. Do not commit it to GitHub.
+---
 
-### 2. Run FastAPI
+## Using ngrok
 
-In the first terminal:
+ngrok creates a public HTTPS URL that forwards requests to your local FastAPI server.
+
+This is useful when you need to demonstrate the application using a public HTTPS URL or access the application from another device.
+
+### 1. Install ngrok
+
+Download and install ngrok from the official website:
+
+[Download ngrok](https://ngrok.com/download?utm_source=chatgpt.com)
+
+After installation, verify that ngrok is available:
+
+```bash
+ngrok version
+```
+
+If the command displays the ngrok version, the installation was successful.
+
+### 2. Run the FastAPI application
+
+First, start the FastAPI server.
+
+#### Windows
 
 ```powershell
-cd C:\Users\Admin\Documents\A.HocTap\2026-2027\SOA\TestOauth
 .venv\Scripts\activate
+uvicorn main:app --reload --port 8081
+```
+
+#### Linux / macOS
+
+```bash
+source .venv/bin/activate
+uvicorn main:app --reload --port 8081
+```
+
+#### Linux with fish shell
+
+```fish
+source .venv/bin/activate.fish
 uvicorn main:app --reload --port 8081
 ```
 
 Keep this terminal running.
 
-### 3. Start ngrok
+The application should now be available at:
 
-Open a second terminal and run:
+```text
+http://localhost:8081
+```
 
-```powershell
+### 3. Authenticate ngrok
+
+Open a **new terminal**.
+
+If ngrok has not been authenticated yet, run:
+
+```bash
+./ngrok config add-authtoken YOUR_NGROK_AUTHTOKEN
+```
+
+Replace `YOUR_NGROK_AUTHTOKEN` with your ngrok authentication token.
+
+> This step only needs to be done once.
+
+> Keep your ngrok authtoken private. Do not commit it to GitHub.
+
+### 4. Start ngrok
+
+In the new terminal, run:
+
+```bash
 ngrok http 8081
 ```
 
-ngrok will display a public forwarding URL similar to:
+ngrok will display a public HTTPS URL similar to:
 
 ```text
-Forwarding    https://example.ngrok-free.app -> http://localhost:8081
+Forwarding    https://abc123.ngrok-free.app -> http://localhost:8081
 ```
 
-The actual URL may be different each time ngrok starts.
+Copy the HTTPS URL:
 
-### 4. Update the Redirect URI
+```text
+https://abc123.ngrok-free.app
+```
 
-When using ngrok, update `.env`:
+Keep the ngrok terminal running.
+
+### 5. Update the Google OAuth Redirect URI
+
+Open your `.env` file and update:
 
 ```env
-GOOGLE_REDIRECT_URI=https://example.ngrok-free.app/auth/google/callback
+GOOGLE_REDIRECT_URI=https://abc123.ngrok-free.app/auth/google/callback
 ```
 
-Also add the same URL to Google Cloud Console under:
+Replace `abc123.ngrok-free.app` with your actual ngrok URL.
 
-**Authorized Redirect URIs**
+Then add the **same redirect URI** to Google Cloud under **Authorized redirect URIs**.
+
+For example:
 
 ```text
-https://example.ngrok-free.app/auth/google/callback
+https://abc123.ngrok-free.app/auth/google/callback
 ```
 
-The URL must match exactly.
+> The redirect URI in `.env` and Google Cloud must match exactly.
 
-### 5. Test with ngrok
+### 6. Restart the FastAPI application
 
-Open the public URL:
+After changing `.env`, restart FastAPI so the new environment variables are loaded.
+
+Stop the FastAPI server with:
 
 ```text
-https://example.ngrok-free.app
+Ctrl + C
 ```
 
-To start Google Login:
+Then start it again.
+
+#### Windows
+
+```powershell
+.venv\Scripts\activate
+uvicorn main:app --reload --port 8081
+```
+
+#### Linux / macOS
+
+```bash
+source .venv/bin/activate
+uvicorn main:app --reload --port 8081
+```
+
+#### Linux with fish shell
+
+```fish
+source .venv/bin/activate.fish
+uvicorn main:app --reload --port 8081
+```
+
+Keep both terminals running:
 
 ```text
-https://example.ngrok-free.app/login/google
+Terminal 1:
+FastAPI → http://localhost:8081
+
+Terminal 2:
+ngrok   → https://abc123.ngrok-free.app
 ```
 
-The OAuth flow is:
-
-```text
-User
-→ /login/google
-→ Google Login
-→ /auth/google/callback
-→ Save User in Session
-→ /me
-```
-
-### Localhost vs ngrok
-
-| Method | URL                            | HTTPS | Public Access |
-| ------ | ------------------------------ | ----- | ------------- |
-| Local  | `http://localhost:8081`        | No    | No            |
-| ngrok  | `https://xxxxx.ngrok-free.app` | Yes   | Yes           |
-
-ngrok does not replace FastAPI. It only creates a public HTTPS tunnel to the local FastAPI application.
+---
 
 ## Test Google Login
 
-Open the following URL in a browser:
-
-```text
-http://localhost:8081/login/google
-```
-
-Or, when using ngrok:
+Open the following URL in your browser:
 
 ```text
 https://YOUR_NGROK_URL/login/google
 ```
 
-After successful login, Google redirects the browser to:
+For example:
 
 ```text
-/auth/google/callback
+https://abc123.ngrok-free.app/login/google
 ```
 
-The application then saves the Google user information in the session.
+You will be redirected to Google to sign in.
+
+After successful authentication, Google redirects you back to:
+
+```text
+https://abc123.ngrok-free.app/auth/google/callback
+```
+
+The application then stores the authenticated user information in the session.
+
+To check the logged-in user, open:
+
+```text
+https://abc123.ngrok-free.app/me
+```
+
+If authentication is successful, `/me` returns the authenticated user's information.
+
+---
+
+## Localhost vs ngrok
+
+| Environment | URL                      | HTTPS | Public Access |
+| ----------- | ------------------------ | ----- | ------------- |
+| Localhost   | `http://localhost:8081`  | No    | No            |
+| ngrok       | `https://YOUR_NGROK_URL` | Yes   | Yes           |
+
+Use **localhost** during normal local development.
+
+Use **ngrok** when you need a public HTTPS URL for demonstration or OAuth testing.
+
+> Your ngrok URL may change when the ngrok tunnel is restarted.
+
+If the ngrok URL changes, update both:
+
+1. `GOOGLE_REDIRECT_URI` in `.env`
+2. **Authorized redirect URIs** in Google Cloud
+
+---
 
 ## API Endpoints
 
-| Method | Endpoint                | Description                         |
-| ------ | ----------------------- | ----------------------------------- |
-| GET    | `/`                     | Check if the application is running |
-| GET    | `/login/google`         | Start Google OAuth login            |
-| GET    | `/auth/google/callback` | Handle Google's OAuth callback      |
-| GET    | `/me`                   | Get the current logged-in user      |
+| Method | Endpoint                | Description                              |
+| ------ | ----------------------- | ---------------------------------------- |
+| GET    | `/`                     | Check whether the application is running |
+| GET    | `/login/google`         | Start Google OAuth login                 |
+| GET    | `/auth/google/callback` | Handle the Google OAuth callback         |
+| GET    | `/me`                   | Get the currently authenticated user     |
+
+### Localhost
+
+```text
+http://localhost:8081/
+http://localhost:8081/login/google
+http://localhost:8081/me
+```
+
+### ngrok
+
+```text
+https://YOUR_NGROK_URL/
+https://YOUR_NGROK_URL/login/google
+https://YOUR_NGROK_URL/me
+```
+
+> Open `/login/google` directly in a browser because this endpoint redirects the user to Google's login page.
+
+---
 
 ## Swagger UI
 
-FastAPI provides Swagger UI at:
+FastAPI provides interactive API documentation through Swagger UI.
+
+### Localhost
 
 ```text
 http://localhost:8081/docs
 ```
 
-When using ngrok:
+### ngrok
 
 ```text
 https://YOUR_NGROK_URL/docs
 ```
 
-The `/me` endpoint can be tested from Swagger after completing Google Login in the browser.
+Swagger UI allows you to view and test the available API endpoints.
 
-The `/login/google` endpoint should be opened directly in a browser because it starts a redirect to Google.
+For Google OAuth login, open `/login/google` directly in a browser because it redirects to Google.
+
+---
 
 ## OAuth Flow
+
+The Google OAuth authentication flow works as follows:
 
 ```text
 User
   ↓
 /login/google
   ↓
-Google OAuth 2.0
+Google Login
   ↓
-Google Login & Consent
+Google Authentication
   ↓
 /auth/google/callback
   ↓
-Exchange Authorization Code
-  ↓
-Get Google User Information
-  ↓
-Save User in Session
+Save User Information in Session
   ↓
 /me
+  ↓
+Authenticated User Information
 ```
+
+### Step-by-step
+
+1. The user opens `/login/google`.
+2. The application redirects the user to Google.
+3. The user signs in with their Google account.
+4. Google redirects the user to `/auth/google/callback`.
+5. The application exchanges the authorization code for Google OAuth tokens.
+6. The application retrieves the user's Google account information.
+7. The user's information is stored in the session.
+8. The user can access `/me` to view their authenticated information.
+
+---
 
 ## Notes
 
-This project is a simple OAuth 2.0 demonstration.
-
-It currently stores the logged-in user's Google identity in the session. It does not create or store user accounts in a database.
-
-For ngrok testing, the public URL may change when the ngrok session is restarted. If the URL changes, update both:
-
-1. `GOOGLE_REDIRECT_URI` in `.env`
-2. Authorized Redirect URI in Google Cloud Console
+* This project is a demonstration of Google OAuth 2.0 authentication using FastAPI and Authlib.
+* The application uses `SessionMiddleware` to maintain the user's login session.
+* No database is used to store user information in this demo.
+* The `.env` file contains sensitive configuration and must not be committed to GitHub.
+* The ngrok authtoken must also be kept private.
+* The ngrok public URL may change when the tunnel is restarted.
+* If the ngrok URL changes, update the Google OAuth redirect URI in both `.env` and Google Cloud.
+* The FastAPI server and ngrok tunnel must both be running when testing through the public URL.
+* For local development, use `http://localhost:8081`.
+* For OAuth testing through a public HTTPS URL, use the ngrok URL.
