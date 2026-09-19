@@ -126,7 +126,7 @@ Web application
 For local development, add the following under **Authorized redirect URIs**:
 
 ```text
-http://localhost:8081/auth/google/callback
+http://127.0.0.1:8081/auth/google/callback
 ```
 
 The redirect URI must exactly match the value used by the application.
@@ -184,7 +184,7 @@ Set the following values:
 ```env
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_REDIRECT_URI=http://localhost:8081/auth/google/callback
+GOOGLE_REDIRECT_URI=http://127.0.0.1:8081/auth/google/callback
 SESSION_SECRET=your_session_secret
 ```
 
@@ -270,13 +270,13 @@ uvicorn main:app --reload --port 8081
 The application should now be available at:
 
 ```text
-http://localhost:8081
+http://127.0.0.1:8081
 ```
 
 You can test the root endpoint by opening:
 
 ```text
-http://localhost:8081/
+http://127.0.0.1:8081/
 ```
 
 ---
@@ -331,7 +331,7 @@ Keep this terminal running.
 The application should now be available at:
 
 ```text
-http://localhost:8081
+http://127.0.0.1:8081
 ```
 
 ### 3. Authenticate ngrok
@@ -361,7 +361,7 @@ ngrok http 8081
 ngrok will display a public HTTPS URL similar to:
 
 ```text
-Forwarding    https://abc123.ngrok-free.app -> http://localhost:8081
+Forwarding    https://abc123.ngrok-free.app -> http://127.0.0.1:8081
 ```
 
 Copy the HTTPS URL:
@@ -429,7 +429,7 @@ Keep both terminals running:
 
 ```text
 Terminal 1:
-FastAPI → http://localhost:8081
+FastAPI → http://127.0.0.1:8081
 
 Terminal 2:
 ngrok   → https://abc123.ngrok-free.app
@@ -475,10 +475,10 @@ If authentication is successful, `/me` returns the authenticated user's informat
 
 | Environment | URL                      | HTTPS | Public Access |
 | ----------- | ------------------------ | ----- | ------------- |
-| Localhost   | `http://localhost:8081`  | No    | No            |
+| Local       | `http://127.0.0.1:8081`  | No    | No            |
 | ngrok       | `https://YOUR_NGROK_URL` | Yes   | Yes           |
 
-Use **localhost** during normal local development.
+Use **127.0.0.1** during normal local development.
 
 Use **ngrok** when you need a public HTTPS URL for demonstration or OAuth testing.
 
@@ -500,12 +500,12 @@ If the ngrok URL changes, update both:
 | GET    | `/auth/google/callback` | Handle the Google OAuth callback         |
 | GET    | `/me`                   | Get the currently authenticated user     |
 
-### Localhost
+### Local
 
 ```text
-http://localhost:8081/
-http://localhost:8081/login/google
-http://localhost:8081/me
+http://127.0.0.1:8081/
+http://127.0.0.1:8081/login/google
+http://127.0.0.1:8081/me
 ```
 
 ### ngrok
@@ -524,10 +524,10 @@ https://YOUR_NGROK_URL/me
 
 FastAPI provides interactive API documentation through Swagger UI.
 
-### Localhost
+### Local
 
 ```text
-http://localhost:8081/docs
+http://127.0.0.1:8081/docs
 ```
 
 ### ngrok
@@ -587,5 +587,5 @@ Authenticated User Information
 * The ngrok public URL may change when the tunnel is restarted.
 * If the ngrok URL changes, update the Google OAuth redirect URI in both `.env` and Google Cloud.
 * The FastAPI server and ngrok tunnel must both be running when testing through the public URL.
-* For local development, use `http://localhost:8081`.
+* For local development, use `http://127.0.0.1:8081`.
 * For OAuth testing through a public HTTPS URL, use the ngrok URL.
