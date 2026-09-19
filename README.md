@@ -46,6 +46,12 @@ Windows:
 .venv\Scripts\activate
 ```
 
+macOS:
+
+```bash
+source .venv/bin/activate
+```
+
 ### 4. Install dependencies
 
 ```bash
