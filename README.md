@@ -66,7 +66,45 @@ pip install -r requirements.txt
 
 ### 5. Configure environment variables
 
-Create a `.env` file based on `.env.example`:
+Create a `.env` file based on `.env.example`.
+
+#### Windows (PowerShell)
+
+Copy `.env.example` to `.env`:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Open the `.env` file:
+
+```powershell
+notepad .env
+```
+
+#### Linux / macOS
+
+Copy `.env.example` to `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Open the `.env` file:
+
+```bash
+nano .env
+```
+
+You can also use VS Code:
+
+```bash
+code .env
+```
+
+### Configure `.env`
+
+Set the following values:
 
 ```env
 GOOGLE_CLIENT_ID=your_google_client_id
@@ -75,9 +113,47 @@ GOOGLE_REDIRECT_URI=http://localhost:8081/auth/google/callback
 SESSION_SECRET=your_session_secret
 ```
 
-Replace the placeholder values with your own Google OAuth credentials.
+Replace:
 
-> Do not upload the `.env` file to GitHub.
+* `your_google_client_id` with your Google OAuth Client ID.
+* `your_google_client_secret` with your Google OAuth Client Secret.
+* `your_session_secret` with a random secret string.
+
+Generate a random session secret:
+
+Windows (PowerShell):
+
+```powershell
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+Linux / macOS:
+
+```bash
+python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+Copy the generated value and set it as:
+
+```env
+SESSION_SECRET=your_generated_secret
+```
+
+### Verify the `.env` file
+
+Windows (PowerShell):
+
+```powershell
+Get-Content .env
+```
+
+Linux / macOS:
+
+```bash
+cat .env
+```
+
+> Do not upload the `.env` file to GitHub. It contains sensitive OAuth credentials.
 
 ## Google OAuth Configuration
 
