@@ -184,7 +184,6 @@ Set the following values:
 ```env
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_REDIRECT_URI=http://127.0.0.1:8081/auth/google/callback
 SESSION_SECRET=your_session_secret
 ```
 
@@ -374,23 +373,11 @@ Keep the ngrok terminal running.
 
 ### 5. Update the Google OAuth Redirect URI
 
-Open your `.env` file and update:
-
-```env
-GOOGLE_REDIRECT_URI=https://abc123.ngrok-free.app/auth/google/callback
-```
-
-Replace `abc123.ngrok-free.app` with your actual ngrok URL.
-
-Then add the **same redirect URI** to Google Cloud under **Authorized redirect URIs**.
-
-For example:
+Open Google Cloud Console then add the **same redirect URI** to Google Cloud under **Authorized redirect URIs**.
 
 ```text
 https://abc123.ngrok-free.app/auth/google/callback
 ```
-
-> The redirect URI in `.env` and Google Cloud must match exactly.
 
 ### 6. Restart the FastAPI application
 
