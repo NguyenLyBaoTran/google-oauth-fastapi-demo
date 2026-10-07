@@ -10,7 +10,6 @@ load_dotenv()
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
 SESSION_SECRET = os.getenv("SESSION_SECRET") or "dev-secret-key"
 
 app = FastAPI(
@@ -47,10 +46,12 @@ def home():
 
 @app.get("/login/google")
 async def login_google(request: Request):
-
+    redirect_uri = request.url_for("google_callback")   
     return await oauth.google.authorize_redirect(
         request,
-        GOOGLE_REDIRECT_URI
+        redirect_uri,
+        access_type="offline",
+        prompt="consent"
     )
 
 @app.get("/auth/google/callback")
@@ -75,10 +76,19 @@ async def google_callback(request: Request):
 
     return {
         "message": "Google OAuth login successful",
-        "google_id": user.get("sub"),
-        "email": user.get("email"),
-        "name": user.get("name"),
-        "picture": user.get("picture")
+        "user": {
+            "google_id": user.get("sub"),
+            "email": user.get("email"),
+            "name": user.get("name"),
+            "picture": user.get("picture")
+        },
+        "token": {
+            "access_token": token.get("access_token"),
+            "refresh_token": token.get("refresh_token"),
+            "token_type": token.get("token_type"),
+            "expires_in": token.get("expires_in"),
+            "id_token": token.get("id_token")
+        }
     }
 
 @app.get("/me")
@@ -91,3 +101,12 @@ async def get_current_user(request: Request):
             detail="Not logged in"
         )
     return user
+
+@app.get("/logout")
+async def logout(request: Request):
+
+    request.session.clear()
+
+    return {
+        "message": "Logout successful"
+    }
